@@ -10,7 +10,7 @@ class HistoryDetail(BaseModel):
 
 
 class History(BaseModel):
-    user = models.ForeignKey("user.User", on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     bot = models.ForeignKey("bot.Bot", on_delete=models.CASCADE)
     history_detail = models.ManyToManyField(HistoryDetail, related_name="history")
 

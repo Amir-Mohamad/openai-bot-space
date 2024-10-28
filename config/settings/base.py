@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 
 LOCAL_APPS = [
-    "user.apps.UserConfig",
+    "users.apps.UsersConfig",
     "core.apps.CoreConfig",
     "bot.apps.BotConfig",
     "common.apps.CommonConfig",
@@ -38,6 +38,8 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
+    "rest_framework_simplejwt",
+
 ]
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,9 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ] + LOCAL_APPS + THIRD_PARTY_APPS
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -112,3 +116,11 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
