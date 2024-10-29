@@ -10,4 +10,6 @@ urlpatterns = [
     path('bots/', views.BotListAPIView.as_view(), name='bots'),
     # List bot based on user view
     path('bots/user/', views.BotListBasedOnUserAPIView.as_view(), name='bots-user'),
+    # Create bot view
+    path('bot/create/', views.BotCreateAPIView.as_view(), name='bot-create'),
 ]

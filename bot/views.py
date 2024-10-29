@@ -5,13 +5,21 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from bot.models import Bot
 from bot.serializers import BotSerializer
+from rest_framework import serializers
 from .utils import send_to_openai
 from .selectors import BotSelector
+from .services import BotService
 
 
 class UserMessageAPIView(APIView):
-    def get(self, request, bot_id, *args, **kwargs):
-        user_message = "how old are you?"
+    class InputSerializer(serializers.Serializer):
+        user_message = serializers.CharField(max_length=255)
+        
+    def post(self, request, bot_id, *args, **kwargs):
+        serializer = self.InputSerializer(data=request.data)
+        if serializer.is_valid():
+            user_message = serializer.validated_data["user_message"]
+            
 
         if not user_message:
             return Response({"error": "Message is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -40,3 +48,29 @@ class BotListBasedOnUserAPIView(APIView):
         serializer = self.serializer_class(bots, many=True)
 
         return Response(serializer.data)
+
+class BotCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated,]
+    
+    class InputSerializer(serializers.Serializer):
+        name = serializers.CharField(max_length=255)
+        description = serializers.CharField(max_length=1024, required=False)
+
+    def post(self, request):
+        serializer = self.InputSerializer(data=request.data)
+
+        if serializer.is_valid():
+            try:
+                name = serializer.validated_data["name"]
+                description = serializer.validated_data["description"]
+            except KeyError as e:
+                return Response({"error": f"Missing key: {e}"}, status=status.HTTP_400_BAD_REQUEST)
+
+            bot = BotService.create_bot(
+                user=request.user,
+                name=name,
+                description=description,
+            )
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
