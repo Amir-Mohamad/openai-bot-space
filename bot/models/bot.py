@@ -4,6 +4,7 @@ from django.contrib import admin
 
 
 class Bot(models.Model):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='bots')
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

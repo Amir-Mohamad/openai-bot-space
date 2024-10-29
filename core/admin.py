@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import History, HistoryDetail
+from core.models import History, HistoryDetail
 
 class HistoryDetailAdmin(admin.ModelAdmin):
     list_display = ('role', 'message')

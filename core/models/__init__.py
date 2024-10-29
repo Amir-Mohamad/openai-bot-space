@@ -1,0 +1,1 @@
+from core.models.history import History, HistoryDetail
