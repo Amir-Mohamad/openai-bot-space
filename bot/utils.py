@@ -22,14 +22,10 @@ def send_to_openai(user_id, bot_id, message):
     messages.append(system_prompt)
 
     history = History.objects.filter(user=user, bot=bot).first()
-    print(history, "first")
     if not history:
-        print("Creating history")
         history = History.objects.create(user=user, bot=bot)
 
     history_details = HistoryDetail.objects.filter(history__user__id=user_id, history__bot__id=bot_id)
-    print(history_details, "*"*80)
-    print(history)
     
     for detail in history_details:
         messages.append({"role": detail.role, "content": detail.message})
@@ -38,8 +34,6 @@ def send_to_openai(user_id, bot_id, message):
 
     new_history_obj = HistoryDetail.objects.create(role="user", message=message)
     history.history_detail.add(new_history_obj)
-
-    print(messages)
 
     response = client.chat.completions.create(
         
